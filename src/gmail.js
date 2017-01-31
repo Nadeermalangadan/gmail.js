@@ -4,7 +4,7 @@
 // https://github.com/KartikTalwar/gmail.js
 //
 
-var Gmail_ = function(localJQuery) {
+var vaultedge_Gmail_ = function(localJQuery) {
 
     /*
       Use the provided "jQuery" if possible, in order to avoid conflicts with
@@ -38,13 +38,18 @@ var Gmail_ = function(localJQuery) {
     };
 
     api.version           = "0.6.4";
+    try {
     api.tracker.globals   = typeof GLOBALS !== "undefined"
         ? GLOBALS
         : (
             typeof(window) !== "undefined" && window.opener !== null && typeof window.opener.GLOBALS !== "undefined"
                 ? window.opener.GLOBALS
                 : []
-        );
+      );
+    } catch (error) {
+      api.tracker.globals = [];
+    }
+    try {
     api.tracker.view_data = typeof VIEW_DATA !== "undefined"
         ? VIEW_DATA
         : (
@@ -52,6 +57,9 @@ var Gmail_ = function(localJQuery) {
                 ? window.opener.VIEW_DATA
                 : []
         );
+    } catch (error) {
+        api.tracker.view_data = [];
+    }
     api.tracker.ik        = api.tracker.globals[9] || "";
     api.tracker.hangouts  = undefined;
 
@@ -1798,7 +1806,7 @@ var Gmail_ = function(localJQuery) {
             }
             if(typeof time !== "undefined"){
                 var initialInfoboxStyle = top.attr("style");            // backup initial style
-                top.removeAttr("style").fadeTo(time, 0, function(){     // simply remove then restore
+                top.removeAttr("style").attr("style", 'position: relative; top: -50px;width: 100%;z-index: 9999;').fadeTo(time, 0, function () {     // simply remove then restore
                     $(this).attr("style", initialInfoboxStyle);           // style attribute insteed of playing
                 });                             // on visibility property
             }
@@ -2847,12 +2855,12 @@ function initializeOnce(fn) {
 }
 
 // required to avoid error in NodeJS.
-var GmailClass = initializeOnce(Gmail_);
-if (typeof(window) !== "undefined" && !window.Gmail) {
-    window.Gmail = GmailClass;
+var vaultedge_GmailClass = vaultedge_Gmail_();
+if (typeof (window) !== "undefined" && !window.vaultedge_Gmail) {
+    window.vaultedge_Gmail = vaultedge_GmailClass;
 }
 
 // make class accessible to require()-users.
 if (typeof(exports) !== "undefined") {
-    exports.Gmail = GmailClass;
+    exports.vaultedge_Gmail = vaultedge_GmailClass;
 }
